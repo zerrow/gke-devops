@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    # kubernetes.io/ingress.class: "nginx"
+    # kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-ap-dev
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    # nginx.ingress.kubernetes.io/enable-cors: "true"
+    # nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    # nginx.ingress.kubernetes.io/from-to-www-redirect: "false"
+    # nginx.ingress.kubernetes.io/proxy-body-size: 100m
+    # nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    # nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  name: ap-fe-ap-dev-ingress
+  namespace: testing
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: ap.dev.domain.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: ap-fe-web-dev-svc
+            port:
+              number: 5000
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - ap.dev.domain.com
+    secretName: letsencrypt-ap-dev
+status:
+  loadBalancer:
+    ingress:
+    - ip: 34.142.187.48
